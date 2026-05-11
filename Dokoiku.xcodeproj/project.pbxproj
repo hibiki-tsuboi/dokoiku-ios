@@ -6,19 +6,47 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6B55FE92E5821B17905CC5EC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291A02052D6ACA79590A43BE /* Foundation.framework */; };
+		DF61393AF5F3BA91B3140D5C /* RecommendLogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C00D0E780F5ABCA46FF716 /* RecommendLogicTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1137C6AF250798BD3224FDB2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B64854972FB0C0F4004E5F01 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B648549E2FB0C0F4004E5F01;
+			remoteInfo = Dokoiku;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		291A02052D6ACA79590A43BE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		7F724A38C5E9DDD16834E6F1 /* DokoikuTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DokoikuTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8C00D0E780F5ABCA46FF716 /* RecommendLogicTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RecommendLogicTests.swift; sourceTree = "<group>"; };
 		B648549F2FB0C0F5004E5F01 /* Dokoiku.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dokoiku.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B64854A12FB0C0F5004E5F01 /* Dokoiku */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = Dokoiku;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5B94A7C9A991EB68BAD2D901 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B55FE92E5821B17905CC5EC /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B648549C2FB0C0F4004E5F01 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -29,11 +57,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2F720175BF41507842ABD303 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				291A02052D6ACA79590A43BE /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		B17754C67EAF5346FBAAC8CE /* DokoikuTests */ = {
+			isa = PBXGroup;
+			children = (
+				A8C00D0E780F5ABCA46FF716 /* RecommendLogicTests.swift */,
+			);
+			name = DokoikuTests;
+			path = DokoikuTests;
+			sourceTree = "<group>";
+		};
 		B64854962FB0C0F4004E5F01 = {
 			isa = PBXGroup;
 			children = (
 				B64854A12FB0C0F5004E5F01 /* Dokoiku */,
 				B64854A02FB0C0F5004E5F01 /* Products */,
+				C86E08A951E24AA50DDAEBDE /* Frameworks */,
+				B17754C67EAF5346FBAAC8CE /* DokoikuTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -41,13 +88,40 @@
 			isa = PBXGroup;
 			children = (
 				B648549F2FB0C0F5004E5F01 /* Dokoiku.app */,
+				7F724A38C5E9DDD16834E6F1 /* DokoikuTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C86E08A951E24AA50DDAEBDE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2F720175BF41507842ABD303 /* iOS */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		129BEC66D7784050641EADD7 /* DokoikuTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 299BC219704434D525B3A805 /* Build configuration list for PBXNativeTarget "DokoikuTests" */;
+			buildPhases = (
+				305F794FF54AB52205D7052C /* Sources */,
+				5B94A7C9A991EB68BAD2D901 /* Frameworks */,
+				6D978DD85836C19250210E1E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				31557B921AE4CF49703F35C9 /* PBXTargetDependency */,
+			);
+			name = DokoikuTests;
+			productName = DokoikuTests;
+			productReference = 7F724A38C5E9DDD16834E6F1 /* DokoikuTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		B648549E2FB0C0F4004E5F01 /* Dokoiku */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B64854AC2FB0C0F5004E5F01 /* Build configuration list for PBXNativeTarget "Dokoiku" */;
@@ -64,8 +138,6 @@
 				B64854A12FB0C0F5004E5F01 /* Dokoiku */,
 			);
 			name = Dokoiku;
-			packageProductDependencies = (
-			);
 			productName = Dokoiku;
 			productReference = B648549F2FB0C0F5004E5F01 /* Dokoiku.app */;
 			productType = "com.apple.product-type.application";
@@ -100,11 +172,19 @@
 			projectRoot = "";
 			targets = (
 				B648549E2FB0C0F4004E5F01 /* Dokoiku */,
+				129BEC66D7784050641EADD7 /* DokoikuTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6D978DD85836C19250210E1E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B648549D2FB0C0F4004E5F01 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -115,6 +195,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		305F794FF54AB52205D7052C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DF61393AF5F3BA91B3140D5C /* RecommendLogicTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B648549B2FB0C0F4004E5F01 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +212,45 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		31557B921AE4CF49703F35C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Dokoiku;
+			target = B648549E2FB0C0F4004E5F01 /* Dokoiku */;
+			targetProxy = 1137C6AF250798BD3224FDB2 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		553D7489D852EA5D0C2E2879 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.hibiki.DokoikuTests;
+				PRODUCT_NAME = DokoikuTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dokoiku.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Dokoiku";
+				TEST_TARGET_NAME = Dokoiku;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		66155C28B6A80F01AF251030 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.hibiki.DokoikuTests;
+				PRODUCT_NAME = DokoikuTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Dokoiku.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Dokoiku";
+				TEST_TARGET_NAME = Dokoiku;
+			};
+			name = Debug;
+		};
 		B64854AA2FB0C0F5004E5F01 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -321,6 +447,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		299BC219704434D525B3A805 /* Build configuration list for PBXNativeTarget "DokoikuTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				553D7489D852EA5D0C2E2879 /* Release */,
+				66155C28B6A80F01AF251030 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B648549A2FB0C0F4004E5F01 /* Build configuration list for PBXProject "Dokoiku" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

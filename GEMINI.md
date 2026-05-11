@@ -21,7 +21,7 @@ xcodebuild -project Dokoiku.xcodeproj -scheme Dokoiku -configuration Debug build
 
 テストの実行（テストターゲット作成後）:
 ```sh
-xcodebuild test -project Dokoiku.xcodeproj -scheme Dokoiku -destination 'platform=iOS Simulator,name=iPhone 16'
+xcodebuild test -project Dokoiku.xcodeproj -scheme Dokoiku -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
 スキームとターゲットの確認:
