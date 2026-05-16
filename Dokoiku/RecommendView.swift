@@ -102,7 +102,12 @@ struct RecommendView: View {
             recommend()
         }
         .fullScreenCover(item: $selectedItem) { item in
-            decisionScreen(for: item)
+            DecisionScreen(item: item) {
+                item.lastVisited = Date()
+                item.visitCount += 1
+                selectedItem = nil
+                dismiss()
+            }
         }
     }
 
@@ -194,67 +199,6 @@ struct RecommendView: View {
         )
     }
 
-    private func decisionScreen(for item: Item) -> some View {
-        ZStack {
-            Color.brandBackground.ignoresSafeArea()
-
-            RadialGradient(
-                gradient: Gradient(colors: [Color.brandTeal.opacity(0.25), Color.brandBackground]),
-                center: .center,
-                startRadius: 10,
-                endRadius: 600
-            )
-            .ignoresSafeArea()
-
-            VStack(spacing: 36) {
-                Spacer()
-
-                Text("🎉")
-                    .font(.system(size: 100))
-                    .shadow(radius: 10)
-
-                VStack(spacing: 20) {
-                    Text("ここで決定したよ！")
-                        .font(.title3.weight(.bold))
-                        .foregroundColor(.secondary)
-
-                    Text(item.name)
-                        .font(.system(size: 48, weight: .black))
-                        .foregroundColor(.primary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                        .shadow(color: Color.brandTeal.opacity(0.3), radius: 5, x: 0, y: 5)
-                }
-
-                Text("楽しんできてね！")
-                    .font(.title.weight(.black))
-                    .foregroundColor(.brandTeal)
-
-                Spacer()
-
-                Button {
-                    item.lastVisited = Date()
-                    item.visitCount += 1
-                    selectedItem = nil
-                    dismiss()
-                } label: {
-                    Text("わかった！")
-                        .font(.title3.weight(.bold))
-                        .foregroundColor(.white)
-                        .padding(.vertical, 20)
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            Capsule()
-                                .fill(Color.brandTeal)
-                                .shadow(radius: 10)
-                        )
-                        .padding(.horizontal, 50)
-                }
-                .padding(.bottom, 50)
-            }
-        }
-    }
-
     private func recommend() {
         let result = RecommendLogic.recommend(from: allItems, mode: mode)
         mainItem = result.main
@@ -275,5 +219,135 @@ struct RecommendView: View {
 
     private func selectItem(_ item: Item) {
         selectedItem = item
+    }
+}
+
+private struct DecisionScreen: View {
+    let item: Item
+    let onConfirm: () -> Void
+
+    @State private var heroVisible = false
+    @State private var contentVisible = false
+
+    private var categoryColor: Color {
+        item.category == .food ? .brandOrange : .brandGreen
+    }
+
+    private var categoryIcon: String {
+        item.category == .food ? "fork.knife" : "figure.walk"
+    }
+
+    var body: some View {
+        ZStack {
+            Color.brandBackground.ignoresSafeArea()
+
+            RadialGradient(
+                colors: [categoryColor.opacity(0.22), Color.brandBackground.opacity(0)],
+                center: .center,
+                startRadius: 0,
+                endRadius: 360
+            )
+            .ignoresSafeArea()
+
+            DecorativeSparkles(color: categoryColor)
+
+            VStack(spacing: 32) {
+                Spacer()
+
+                ZStack {
+                    Circle()
+                        .fill(categoryColor)
+                        .frame(width: 140, height: 140)
+                        .shadow(color: categoryColor.opacity(0.35), radius: 28, x: 0, y: 14)
+                    Image(systemName: categoryIcon)
+                        .font(.system(size: 56, weight: .semibold))
+                        .foregroundColor(.white)
+                }
+                .scaleEffect(heroVisible ? 1 : 0.5)
+                .opacity(heroVisible ? 1 : 0)
+
+                VStack(spacing: 14) {
+                    Text("ここに決まり！")
+                        .font(.subheadline.weight(.bold))
+                        .foregroundColor(categoryColor)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 6)
+                        .background(
+                            Capsule()
+                                .fill(categoryColor.opacity(0.15))
+                        )
+
+                    Text(item.name)
+                        .font(.system(size: 34, weight: .black, design: .rounded))
+                        .foregroundColor(.primary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+
+                    if !item.area.isEmpty {
+                        Text(item.area)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .opacity(contentVisible ? 1 : 0)
+                .offset(y: contentVisible ? 0 : 16)
+
+                Spacer()
+
+                Button {
+                    onConfirm()
+                } label: {
+                    Text("楽しんできてね！")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(.vertical, 18)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            Capsule()
+                                .fill(Color.brandTeal)
+                        )
+                        .shadow(color: Color.brandTeal.opacity(0.3), radius: 14, x: 0, y: 6)
+                        .padding(.horizontal, 32)
+                }
+                .padding(.bottom, 40)
+                .opacity(contentVisible ? 1 : 0)
+            }
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.65)) {
+                heroVisible = true
+            }
+            withAnimation(.easeOut(duration: 0.45).delay(0.18)) {
+                contentVisible = true
+            }
+        }
+    }
+}
+
+private struct DecorativeSparkles: View {
+    let color: Color
+
+    private let positions: [(x: CGFloat, y: CGFloat, size: CGFloat, opacity: Double)] = [
+        (0.18, 0.20, 22, 0.55),
+        (0.78, 0.16, 16, 0.45),
+        (0.88, 0.38, 24, 0.50),
+        (0.10, 0.42, 14, 0.40),
+        (0.25, 0.62, 18, 0.50),
+        (0.72, 0.64, 16, 0.40),
+        (0.16, 0.78, 12, 0.35),
+        (0.82, 0.82, 20, 0.45)
+    ]
+
+    var body: some View {
+        GeometryReader { geo in
+            ForEach(0..<positions.count, id: \.self) { i in
+                let p = positions[i]
+                Image(systemName: "sparkle")
+                    .font(.system(size: p.size, weight: .semibold))
+                    .foregroundColor(color.opacity(p.opacity))
+                    .position(x: geo.size.width * p.x, y: geo.size.height * p.y)
+            }
+        }
+        .ignoresSafeArea()
     }
 }
