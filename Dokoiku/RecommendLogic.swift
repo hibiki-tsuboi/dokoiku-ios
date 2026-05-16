@@ -41,7 +41,7 @@ class RecommendLogic {
         }.sorted { $0.1 > $1.1 }
         
         let mainItem = scoredCandidates.first?.0
-        let subItems = Array(scoredCandidates.dropFirst().map { $0.0 })
+        let subItems = Array(scoredCandidates.dropFirst().prefix(5).map { $0.0 })
         
         return (mainItem, subItems)
     }
