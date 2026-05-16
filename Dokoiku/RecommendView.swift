@@ -59,10 +59,6 @@ struct RecommendView: View {
         VStack(spacing: 28) {
             Spacer()
 
-            Text("選んでるよ…")
-                .font(.title3.weight(.bold))
-                .foregroundColor(.secondary)
-
             VStack(spacing: 18) {
                 categoryBadge(for: item.category)
 
