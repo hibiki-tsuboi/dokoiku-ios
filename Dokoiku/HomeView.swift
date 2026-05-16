@@ -22,7 +22,8 @@ struct HomeView: View {
                     modeSelection
                 }
             }
-            .navigationTitle("どこいく")
+            .navigationTitle("")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.brandBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
@@ -87,20 +88,33 @@ struct HomeView: View {
     }
 
     private var modeSelection: some View {
-        VStack(spacing: 20) {
-            Text("迷ったら、行き先をおまかせ。")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 24)
+        VStack(spacing: 32) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("今日は")
+                    .font(.title3.weight(.semibold))
+                    .foregroundColor(.secondary)
+                Text("どこいく？")
+                    .font(.system(size: 56, weight: .black, design: .rounded))
+                    .foregroundColor(.primary)
+                Text("気分で選んでね")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.top, 6)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 24)
+            .padding(.top, 8)
 
             VStack(spacing: 14) {
                 ModeButton(title: "ごはん", icon: "fork.knife", color: .brandOrange)
                 ModeButton(title: "おでかけ", icon: "figure.walk", color: .brandGreen)
-                ModeButton(title: "どちらでも", icon: "sparkles", color: .brandTeal)
+                ModeButton(title: "おまかせ", icon: "sparkles", color: .brandTeal)
             }
             .padding(.horizontal, 20)
+
+            Spacer(minLength: 0)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 }
 
