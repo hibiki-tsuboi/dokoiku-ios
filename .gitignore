@@ -46,3 +46,7 @@ fastlane/test_output/
 
 # IDE
 .idea/
+
+# Claude Code
+.claude/
+
