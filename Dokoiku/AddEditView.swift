@@ -61,6 +61,7 @@ struct AddEditView: View {
                     }
                 }
                 TextField("メモ", text: $memo, axis: .vertical)
+                    .lineLimit(3...10)
             }
             
             Section(header: Text("履歴")) {
