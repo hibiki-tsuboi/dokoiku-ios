@@ -95,7 +95,7 @@ struct RecommendView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     VStack(spacing: 2) {
-                        Text("今日のおすすめは")
+                        Text("今日は")
                             .font(.subheadline.weight(.semibold))
                             .foregroundColor(.secondary)
                         Text("ここ！")
