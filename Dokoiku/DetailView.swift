@@ -33,13 +33,11 @@ struct DetailView: View {
                     Text(item.category.rawValue)
                 }
                 
-                if !item.area.isEmpty {
-                    HStack {
-                        Text("エリア")
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text(item.area)
-                    }
+                HStack {
+                    Text("エリア")
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text(item.area.isEmpty ? "未設定" : item.area)
                 }
             }
             
@@ -58,14 +56,12 @@ struct DetailView: View {
                     Text(item.priceLevel.rawValue)
                 }
                 
-                if !item.memo.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("メモ")
-                            .foregroundColor(.secondary)
-                        Text(item.memo)
-                    }
-                    .padding(.vertical, 4)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("メモ")
+                        .foregroundColor(.secondary)
+                    Text(item.memo.isEmpty ? "なし" : item.memo)
                 }
+                .padding(.vertical, 4)
             }
             
             Section(header: Text("履歴")) {
@@ -76,12 +72,14 @@ struct DetailView: View {
                     Text("\(item.visitCount)回")
                 }
                 
-                if let lastVisited = item.lastVisited {
-                    HStack {
-                        Text("最後に訪れた日")
-                            .foregroundColor(.secondary)
-                        Spacer()
+                HStack {
+                    Text("最後に訪れた日")
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    if let lastVisited = item.lastVisited {
                         Text(lastVisited, format: .dateTime.year().month().day())
+                    } else {
+                        Text("なし")
                     }
                 }
             }
