@@ -79,7 +79,11 @@ struct DetailView: View {
                         .foregroundColor(.secondary)
                     Spacer()
                     if let lastVisited = item.lastVisited {
-                        Text(lastVisited, format: .dateTime.year().month().day())
+                        Text(lastVisited, format: Date.VerbatimFormatStyle(
+                            format: "\(year: .defaultDigits)年\(month: .defaultDigits)月\(day: .defaultDigits)日",
+                            timeZone: .current,
+                            calendar: .current
+                        ))
                     } else {
                         Text("")
                     }

@@ -18,7 +18,8 @@ struct AddEditView: View {
     @State private var priceLevel: PriceLevel = .normal
     @State private var visitCount: Int = 0
     @State private var lastVisitedDate: Date = Date()
-    
+    @State private var showingDatePicker = false
+
     let item: Item?
     
     init(item: Item?) {
@@ -69,7 +70,21 @@ struct AddEditView: View {
             Section(header: Text("履歴")) {
                 Stepper("行った回数: \(visitCount)回", value: $visitCount, in: 0...999)
                 if visitCount > 0 {
-                    DatePicker("最後に訪れた日", selection: $lastVisitedDate, displayedComponents: .date)
+                    Button {
+                        showingDatePicker = true
+                    } label: {
+                        HStack {
+                            Text("最後に訪れた日")
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Text(lastVisitedDate, format: Date.VerbatimFormatStyle(
+                                format: "\(year: .defaultDigits)年\(month: .defaultDigits)月\(day: .defaultDigits)日",
+                                timeZone: .current,
+                                calendar: .current
+                            ))
+                            .foregroundColor(.brandTeal)
+                        }
+                    }
                 }
             }
             .listRowBackground(Color.cardBackground)
@@ -92,6 +107,25 @@ struct AddEditView: View {
                 }
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
+        }
+        .sheet(isPresented: $showingDatePicker) {
+            NavigationStack {
+                DatePicker("最後に訪れた日", selection: $lastVisitedDate, displayedComponents: .date)
+                    .datePickerStyle(.graphical)
+                    .labelsHidden()
+                    .padding()
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    .navigationTitle("最後に訪れた日")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button("完了") {
+                                showingDatePicker = false
+                            }
+                        }
+                    }
+            }
+            .presentationDetents([.medium, .large])
         }
     }
     

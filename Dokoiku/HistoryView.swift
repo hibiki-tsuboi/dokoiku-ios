@@ -74,9 +74,13 @@ private struct HistoryRow: View {
             }
             Spacer()
             if let date = item.lastVisited {
-                Text(date, format: .dateTime.year().month().day())
-                    .font(.caption)
-                    .foregroundColor(.secondary)
+                Text(date, format: Date.VerbatimFormatStyle(
+                    format: "\(year: .defaultDigits)年\(month: .defaultDigits)月\(day: .defaultDigits)日",
+                    timeZone: .current,
+                    calendar: .current
+                ))
+                .font(.caption)
+                .foregroundColor(.secondary)
             }
         }
         .padding(.vertical, 6)
