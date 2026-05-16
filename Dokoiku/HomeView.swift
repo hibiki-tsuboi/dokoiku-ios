@@ -7,6 +7,7 @@ import SwiftUI
 import SwiftData
 
 struct HomeView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
     @State private var showingAddSheet = false
 
@@ -26,6 +27,9 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color.brandBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .task {
+                seedVisitsIfNeeded()
+            }
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     NavigationLink {
@@ -109,6 +113,19 @@ struct HomeView: View {
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+
+    private func seedVisitsIfNeeded() {
+        var didSeed = false
+        for item in items {
+            guard let lastVisited = item.lastVisited, item.visits.isEmpty else { continue }
+            let visit = Visit(visitedAt: lastVisited, item: item)
+            modelContext.insert(visit)
+            didSeed = true
+        }
+        if didSeed {
+            try? modelContext.save()
+        }
     }
 }
 

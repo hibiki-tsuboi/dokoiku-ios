@@ -50,7 +50,10 @@ struct RecommendView: View {
         }
         .fullScreenCover(item: $selectedItem) { item in
             DecisionScreen(item: item) {
-                item.lastVisited = Date()
+                let now = Date()
+                let visit = Visit(visitedAt: now, item: item)
+                modelContext.insert(visit)
+                item.lastVisited = now
                 item.visitCount += 1
                 selectedItem = nil
                 dismiss()

@@ -7,10 +7,10 @@ import SwiftUI
 import SwiftData
 
 struct HistoryView: View {
-    @Query(sort: \Item.lastVisited, order: .reverse) private var items: [Item]
+    @Query(sort: \Visit.visitedAt, order: .reverse) private var visits: [Visit]
 
-    var visitedItems: [Item] {
-        items.filter { $0.lastVisited != nil }
+    var validVisits: [Visit] {
+        visits.filter { $0.item != nil }
     }
 
     var body: some View {
@@ -18,19 +18,21 @@ struct HistoryView: View {
             Color.brandBackground.ignoresSafeArea()
 
             List {
-                if visitedItems.isEmpty {
+                if validVisits.isEmpty {
                     Text("まだ履歴がありません")
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .listRowBackground(Color.clear)
                 } else {
-                    ForEach(visitedItems) { item in
-                        NavigationLink {
-                            DetailView(item: item)
-                        } label: {
-                            HistoryRow(item: item)
+                    ForEach(validVisits) { visit in
+                        if let item = visit.item {
+                            NavigationLink {
+                                DetailView(item: item)
+                            } label: {
+                                HistoryRow(item: item, visitedAt: visit.visitedAt)
+                            }
+                            .listRowBackground(Color.cardBackground)
                         }
-                        .listRowBackground(Color.cardBackground)
                     }
                 }
             }
@@ -44,6 +46,7 @@ struct HistoryView: View {
 
 private struct HistoryRow: View {
     let item: Item
+    let visitedAt: Date
 
     private var categoryColor: Color {
         item.category == .food ? .brandOrange : .brandGreen
@@ -73,15 +76,13 @@ private struct HistoryRow: View {
                 }
             }
             Spacer()
-            if let date = item.lastVisited {
-                Text(date, format: Date.VerbatimFormatStyle(
-                    format: "\(year: .defaultDigits)年\(month: .defaultDigits)月\(day: .defaultDigits)日",
-                    timeZone: .current,
-                    calendar: .current
-                ))
-                .font(.caption)
-                .foregroundColor(.secondary)
-            }
+            Text(visitedAt, format: Date.VerbatimFormatStyle(
+                format: "\(year: .defaultDigits)年\(month: .defaultDigits)月\(day: .defaultDigits)日",
+                timeZone: .current,
+                calendar: .current
+            ))
+            .font(.caption)
+            .foregroundColor(.secondary)
         }
         .padding(.vertical, 6)
     }

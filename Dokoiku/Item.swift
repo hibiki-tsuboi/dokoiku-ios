@@ -35,7 +35,10 @@ final class Item {
     var priceLevel: PriceLevel
     var visitCount: Int
     var createdAt: Date
-    
+
+    @Relationship(deleteRule: .cascade, inverse: \Visit.item)
+    var visits: [Visit] = []
+
     init(id: UUID = UUID(),
          name: String,
          category: Category,
