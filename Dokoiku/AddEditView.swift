@@ -17,6 +17,7 @@ struct AddEditView: View {
     @State private var desireLevel: Int = 3
     @State private var priceLevel: PriceLevel = .normal
     @State private var visitCount: Int = 0
+    @State private var lastVisitedDate: Date = Date()
     
     let item: Item?
     
@@ -30,6 +31,9 @@ struct AddEditView: View {
             _desireLevel = State(initialValue: item.desireLevel)
             _priceLevel = State(initialValue: item.priceLevel)
             _visitCount = State(initialValue: item.visitCount)
+            if let lastDate = item.lastVisited {
+                _lastVisitedDate = State(initialValue: lastDate)
+            }
         }
     }
     
@@ -61,6 +65,9 @@ struct AddEditView: View {
             
             Section(header: Text("履歴")) {
                 Stepper("行った回数: \(visitCount)回", value: $visitCount, in: 0...999)
+                if visitCount > 0 {
+                    DatePicker("最後に訪れた日", selection: $lastVisitedDate, displayedComponents: .date)
+                }
             }
         }
         .navigationTitle(item == nil ? "候補を追加" : "候補を編集")
@@ -81,6 +88,7 @@ struct AddEditView: View {
     }
     
     private func save() {
+        let finalLastVisited = visitCount > 0 ? lastVisitedDate : nil
         if let item = item {
             item.name = name
             item.category = category
@@ -89,8 +97,9 @@ struct AddEditView: View {
             item.desireLevel = desireLevel
             item.priceLevel = priceLevel
             item.visitCount = visitCount
+            item.lastVisited = finalLastVisited
         } else {
-            let newItem = Item(name: name, category: category, area: area, memo: memo, desireLevel: desireLevel, priceLevel: priceLevel, visitCount: visitCount)
+            let newItem = Item(name: name, category: category, area: area, memo: memo, desireLevel: desireLevel, lastVisited: finalLastVisited, priceLevel: priceLevel, visitCount: visitCount)
             modelContext.insert(newItem)
         }
         dismiss()
