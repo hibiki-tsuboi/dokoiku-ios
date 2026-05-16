@@ -94,10 +94,6 @@ struct HomeView: View {
                 Text("どこいく？")
                     .font(.system(size: 56, weight: .black, design: .rounded))
                     .foregroundColor(.primary)
-                Text("気分で選んでね")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding(.top, 6)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 24)
