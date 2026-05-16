@@ -110,7 +110,6 @@ struct RecommendView: View {
                     mainCard(for: item, showBurst: burstVisible)
                         .padding(.horizontal, 20)
                         .opacity(heroVisible ? 1 : 0)
-                        .scaleEffect(heroVisible ? 1 : 0.92)
 
                     if !subItems.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
@@ -209,11 +208,6 @@ struct RecommendView: View {
 
         return VStack(spacing: 18) {
             ZStack {
-                if showBurst {
-                    SparkleBurst(color: categoryColor)
-                        .frame(width: 220, height: 220)
-                        .allowsHitTesting(false)
-                }
                 Circle()
                     .fill(categoryColor)
                     .frame(width: 96, height: 96)
@@ -221,6 +215,13 @@ struct RecommendView: View {
                 Image(systemName: categoryIcon)
                     .font(.system(size: 40, weight: .semibold))
                     .foregroundColor(.white)
+            }
+            .overlay {
+                if showBurst {
+                    SparkleBurst(color: categoryColor)
+                        .frame(width: 220, height: 220)
+                        .allowsHitTesting(false)
+                }
             }
             .padding(.top, 4)
 
@@ -285,40 +286,37 @@ struct RecommendView: View {
         let categoryColor: Color = item.category == .food ? .brandOrange : .brandGreen
         let categoryIcon = item.category == .food ? "fork.knife" : "figure.walk"
 
-        return Button {
-            selectItem(item)
-        } label: {
-            HStack(spacing: 14) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(categoryColor)
-                        .frame(width: 40, height: 40)
-                    Image(systemName: categoryIcon)
-                        .font(.callout.weight(.semibold))
-                        .foregroundColor(.white)
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.name)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundColor(.primary)
-                    if !item.area.isEmpty {
-                        Text(item.area)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                Spacer()
-                Image(systemName: "arrow.right.circle.fill")
-                    .font(.title3)
-                    .foregroundColor(.brandTeal)
+        return HStack(spacing: 14) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(categoryColor)
+                    .frame(width: 40, height: 40)
+                Image(systemName: categoryIcon)
+                    .font(.callout.weight(.semibold))
+                    .foregroundColor(.white)
             }
-            .padding(14)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(Color.cardBackground)
-            )
+            VStack(alignment: .leading, spacing: 2) {
+                Text(item.name)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.primary)
+                if !item.area.isEmpty {
+                    Text(item.area)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            Spacer()
+            Button("ここにする") {
+                selectItem(item)
+            }
+            .buttonStyle(.bordered)
+            .tint(.brandTeal)
         }
-        .buttonStyle(.plain)
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(Color.cardBackground)
+        )
     }
 
     private func startReveal() {
