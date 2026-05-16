@@ -11,7 +11,6 @@ import SwiftData
 enum Category: String, Codable, CaseIterable, Identifiable {
     case food = "ごはん"
     case outing = "おでかけ"
-    case both = "どちらでも"
     
     var id: String { rawValue }
 }

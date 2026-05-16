@@ -21,14 +21,14 @@ final class RecommendLogicTests: XCTestCase {
     }
     
     func testRecommendBoth() {
-        let item1 = Item(name: "カフェ", category: .both)
+        let item1 = Item(name: "カフェ", category: .food)
         let item2 = Item(name: "水族館", category: .outing)
         
         let candidates = [item1, item2]
         
-        let result = RecommendLogic.recommend(from: candidates, mode: .outing)
+        // modeがnilの時、すべてのカテゴリが含まれる
+        let result = RecommendLogic.recommend(from: candidates, mode: nil)
         
-        // modeがoutingの時、bothのカテゴリも含まれる
         XCTAssertEqual(result.main?.name != nil, true)
         XCTAssertEqual(result.sub.count, 1)
     }

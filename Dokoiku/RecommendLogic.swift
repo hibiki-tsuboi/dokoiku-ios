@@ -4,12 +4,12 @@
 //
 
 import Foundation
-
-struct RecommendLogic {
-    static func recommend(from candidates: [Item], mode: Category) -> (main: Item?, sub: [Item]) {
+class RecommendLogic {
+    static func recommend(from candidates: [Item], mode: Category?) -> (main: Item?, sub: [Item]) {
         var filtered = candidates
-        if mode != .both {
-            filtered = filtered.filter { $0.category == mode || $0.category == .both }
+
+        if let mode = mode {
+            filtered = filtered.filter { $0.category == mode }
         }
         
         guard !filtered.isEmpty else {

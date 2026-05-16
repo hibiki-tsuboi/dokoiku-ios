@@ -82,7 +82,7 @@ struct ModeButton: View {
     
     var body: some View {
         NavigationLink {
-            RecommendView(mode: title == "ごはん" ? .food : (title == "おでかけ" ? .outing : .both))
+            RecommendView(mode: title == "ごはん" ? .food : (title == "おでかけ" ? .outing : nil))
         } label: {
             HStack {
                 Image(systemName: icon)

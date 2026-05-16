@@ -11,7 +11,7 @@ struct RecommendView: View {
     @Environment(\.dismiss) private var dismiss
     @Query private var allItems: [Item]
     
-    let mode: Category
+    let mode: Category?
     
     @State private var mainItem: Item?
     @State private var subItems: [Item] = []
