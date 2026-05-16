@@ -97,11 +97,13 @@ struct AddEditView: View {
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
-        .confirmationDialog("本当に削除しますか？", isPresented: $showingDeleteConfirm, titleVisibility: .visible) {
+        .alert("本当に削除しますか？", isPresented: $showingDeleteConfirm) {
+            Button("キャンセル", role: .cancel) {}
             Button("削除", role: .destructive) {
                 delete()
             }
-            Button("キャンセル", role: .cancel) {}
+        } message: {
+            Text("この操作は取り消せません。")
         }
     }
     
