@@ -8,7 +8,8 @@ import SwiftData
 
 struct HomeView: View {
     @Query private var items: [Item]
-    
+    @State private var showingAddSheet = false
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -24,9 +25,9 @@ struct HomeView: View {
                             .foregroundColor(.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
-                        
-                        NavigationLink {
-                            AddEditView(item: nil)
+
+                        Button {
+                            showingAddSheet = true
                         } label: {
                             Text("候補を追加する")
                                 .font(.headline)
@@ -69,6 +70,11 @@ struct HomeView: View {
                     } label: {
                         Image(systemName: "list.bullet")
                     }
+                }
+            }
+            .sheet(isPresented: $showingAddSheet) {
+                NavigationStack {
+                    AddEditView(item: nil)
                 }
             }
         }

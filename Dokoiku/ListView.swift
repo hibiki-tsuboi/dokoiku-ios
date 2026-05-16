@@ -12,6 +12,7 @@ struct ListView: View {
     
     @State private var searchText = ""
     @State private var selectedCategory: Category? = nil
+    @State private var showingAddSheet = false
     
     var filteredItems: [Item] {
         var result = items
@@ -66,11 +67,16 @@ struct ListView: View {
         .navigationTitle("候補一覧")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink {
-                    AddEditView(item: nil)
+                Button {
+                    showingAddSheet = true
                 } label: {
                     Image(systemName: "plus")
                 }
+            }
+        }
+        .sheet(isPresented: $showingAddSheet) {
+            NavigationStack {
+                AddEditView(item: nil)
             }
         }
     }
