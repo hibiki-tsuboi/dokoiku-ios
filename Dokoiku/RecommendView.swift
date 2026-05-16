@@ -22,6 +22,9 @@ struct RecommendView: View {
     @State private var shuffleItem: Item?
     @State private var shuffleTask: Task<Void, Never>?
     @State private var revealPulse = false
+    @State private var heroVisible = false
+    @State private var burstVisible = false
+    @State private var contentVisible = false
 
     var body: some View {
         ZStack {
@@ -91,9 +94,23 @@ struct RecommendView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: 20) {
-                    mainCard(for: item)
+                    VStack(spacing: 2) {
+                        Text("今日のおすすめは")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundColor(.secondary)
+                        Text("ここ！")
+                            .font(.system(size: 48, weight: .black, design: .rounded))
+                            .foregroundColor(.primary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 16)
+                    .opacity(heroVisible ? 1 : 0)
+                    .scaleEffect(heroVisible ? 1 : 0.85)
+
+                    mainCard(for: item, showBurst: burstVisible)
                         .padding(.horizontal, 20)
-                        .padding(.top, 8)
+                        .opacity(heroVisible ? 1 : 0)
+                        .scaleEffect(heroVisible ? 1 : 0.92)
 
                     if !subItems.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
@@ -109,6 +126,8 @@ struct RecommendView: View {
                             .padding(.horizontal, 20)
                         }
                         .padding(.top, 8)
+                        .opacity(contentVisible ? 1 : 0)
+                        .offset(y: contentVisible ? 0 : 12)
                     }
                 }
                 .padding(.bottom, 24)
@@ -146,6 +165,27 @@ struct RecommendView: View {
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 12)
+            .opacity(contentVisible ? 1 : 0)
+        }
+        .onAppear {
+            heroVisible = false
+            burstVisible = false
+            contentVisible = false
+
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.65)) {
+                heroVisible = true
+            }
+
+            Task {
+                try? await Task.sleep(for: .milliseconds(120))
+                burstVisible = true
+                try? await Task.sleep(for: .milliseconds(1100))
+                burstVisible = false
+            }
+
+            withAnimation(.easeOut(duration: 0.45).delay(0.35)) {
+                contentVisible = true
+            }
         }
     }
 
@@ -163,12 +203,17 @@ struct RecommendView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    private func mainCard(for item: Item) -> some View {
+    private func mainCard(for item: Item, showBurst: Bool = false) -> some View {
         let categoryColor: Color = item.category == .food ? .brandOrange : .brandGreen
         let categoryIcon = item.category == .food ? "fork.knife" : "figure.walk"
 
         return VStack(spacing: 18) {
             ZStack {
+                if showBurst {
+                    SparkleBurst(color: categoryColor)
+                        .frame(width: 220, height: 220)
+                        .allowsHitTesting(false)
+                }
                 Circle()
                     .fill(categoryColor)
                     .frame(width: 96, height: 96)
@@ -467,6 +512,51 @@ private struct DecisionScreen: View {
             withAnimation(.easeOut(duration: 0.45).delay(0.18)) {
                 contentVisible = true
             }
+        }
+    }
+}
+
+private struct SparkleBurst: View {
+    let color: Color
+
+    @State private var animate = false
+
+    private struct Sparkle {
+        let angle: Double
+        let distance: CGFloat
+        let size: CGFloat
+        let delay: Double
+    }
+
+    private let sparkles: [Sparkle] = [
+        Sparkle(angle: -80,  distance: 95,  size: 22, delay: 0.00),
+        Sparkle(angle: -40,  distance: 105, size: 18, delay: 0.05),
+        Sparkle(angle:   0,  distance: 90,  size: 24, delay: 0.02),
+        Sparkle(angle:  40,  distance: 100, size: 20, delay: 0.08),
+        Sparkle(angle:  80,  distance: 85,  size: 16, delay: 0.04),
+        Sparkle(angle: 130,  distance: 95,  size: 18, delay: 0.06),
+        Sparkle(angle: 180,  distance: 80,  size: 20, delay: 0.03),
+        Sparkle(angle: -130, distance: 90,  size: 22, delay: 0.07)
+    ]
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<sparkles.count, id: \.self) { i in
+                let s = sparkles[i]
+                Image(systemName: "sparkle")
+                    .font(.system(size: s.size, weight: .bold))
+                    .foregroundColor(color)
+                    .offset(
+                        x: animate ? CGFloat(cos(.pi * s.angle / 180)) * s.distance : 0,
+                        y: animate ? CGFloat(sin(.pi * s.angle / 180)) * s.distance : 0
+                    )
+                    .opacity(animate ? 0 : 1)
+                    .scaleEffect(animate ? 1.3 : 0.3)
+                    .animation(.easeOut(duration: 0.9).delay(s.delay), value: animate)
+            }
+        }
+        .onAppear {
+            animate = true
         }
     }
 }
