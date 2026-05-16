@@ -186,17 +186,11 @@ struct RecommendView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 8)
 
-                HStack(spacing: 6) {
-                    Text(item.category.rawValue)
-                    if !item.area.isEmpty {
-                        Text("·")
-                        Text(item.area)
-                    }
-                    Text("·")
-                    Text(item.priceLevel.rawValue)
+                if !item.area.isEmpty {
+                    Text(item.area)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                 }
-                .font(.subheadline)
-                .foregroundColor(.secondary)
             }
 
             if !item.memo.isEmpty {
