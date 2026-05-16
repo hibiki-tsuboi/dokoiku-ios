@@ -5,6 +5,7 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct RecommendView: View {
     @Environment(\.modelContext) private var modelContext
@@ -17,81 +18,21 @@ struct RecommendView: View {
     @State private var subItems: [Item] = []
     @State private var showingConfirmation = false
     @State private var selectedItem: Item?
+    @State private var isShuffling = true
+    @State private var shuffleItem: Item?
+    @State private var shuffleTask: Task<Void, Never>?
+    @State private var revealPulse = false
 
     var body: some View {
         ZStack {
             Color.brandBackground.ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                if let mainItem = mainItem {
-                    ScrollView {
-                        VStack(spacing: 20) {
-                            Text("今日のおすすめ")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundColor(.secondary)
-                                .padding(.top, 8)
-
-                            mainCard(for: mainItem)
-                                .padding(.horizontal)
-
-                            if !subItems.isEmpty {
-                                VStack(alignment: .leading, spacing: 12) {
-                                    Text("その他の候補")
-                                        .font(.headline)
-                                        .padding(.horizontal)
-
-                                    VStack(spacing: 10) {
-                                        ForEach(subItems) { item in
-                                            subItemRow(for: item)
-                                        }
-                                    }
-                                    .padding(.horizontal)
-                                }
-                                .padding(.top, 8)
-                            }
-                        }
-                        .padding(.bottom, 16)
-                    }
-
-                    VStack(spacing: 12) {
-                        Button {
-                            selectItem(mainItem)
-                        } label: {
-                            Text("ここにする")
-                                .font(.headline)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 16)
-                                .frame(maxWidth: .infinity)
-                                .background(Color.brandTeal)
-                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                        }
-
-                        Button {
-                            recommend()
-                        } label: {
-                            Text("もう一回")
-                                .font(.headline)
-                                .foregroundColor(.brandTeal)
-                                .padding(.vertical, 16)
-                                .frame(maxWidth: .infinity)
-                                .background(Color.brandTeal.opacity(0.12))
-                                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                        }
-                    }
-                    .padding()
-                } else {
-                    VStack(spacing: 12) {
-                        Image(systemName: "tray")
-                            .font(.system(size: 48, weight: .light))
-                            .foregroundColor(.secondary)
-                        Text("候補が見つかりません")
-                            .font(.headline)
-                        Text("もっと候補を追加してください")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
+            if isShuffling, let shuffleItem {
+                shufflingView(for: shuffleItem)
+            } else if let mainItem {
+                resultView(for: mainItem)
+            } else {
+                emptyState
             }
         }
         .navigationTitle("おすすめ")
@@ -99,7 +40,10 @@ struct RecommendView: View {
         .toolbarBackground(Color.brandBackground, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .onAppear {
-            recommend()
+            startReveal()
+        }
+        .onDisappear {
+            shuffleTask?.cancel()
         }
         .fullScreenCover(item: $selectedItem) { item in
             DecisionScreen(item: item) {
@@ -109,6 +53,116 @@ struct RecommendView: View {
                 dismiss()
             }
         }
+    }
+
+    private func shufflingView(for item: Item) -> some View {
+        VStack(spacing: 28) {
+            Spacer()
+
+            Text("選んでるよ…")
+                .font(.title3.weight(.bold))
+                .foregroundColor(.secondary)
+
+            VStack(spacing: 18) {
+                categoryBadge(for: item.category)
+
+                Text(item.name)
+                    .font(.system(size: 30, weight: .black, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
+                    .frame(maxWidth: .infinity, minHeight: 84)
+                    .padding(.horizontal, 16)
+            }
+            .padding(.vertical, 32)
+            .padding(.horizontal, 20)
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .fill(Color.cardBackground)
+            )
+            .shadow(color: Color.black.opacity(0.08), radius: 18, x: 0, y: 8)
+            .padding(.horizontal, 24)
+            .scaleEffect(revealPulse ? 1.0 : 0.98)
+            .animation(.easeInOut(duration: 0.35).repeatForever(autoreverses: true), value: revealPulse)
+
+            Spacer()
+        }
+        .onAppear { revealPulse = true }
+    }
+
+    private func resultView(for item: Item) -> some View {
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: 20) {
+                    Text("今日のおすすめ")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(.secondary)
+                        .padding(.top, 8)
+
+                    mainCard(for: item)
+                        .padding(.horizontal)
+
+                    if !subItems.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("その他の候補")
+                                .font(.headline)
+                                .padding(.horizontal)
+
+                            VStack(spacing: 10) {
+                                ForEach(subItems) { sub in
+                                    subItemRow(for: sub)
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        .padding(.top, 8)
+                    }
+                }
+                .padding(.bottom, 16)
+            }
+
+            VStack(spacing: 12) {
+                Button {
+                    selectItem(item)
+                } label: {
+                    Text("ここにする")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .padding(.vertical, 16)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.brandTeal)
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+
+                Button {
+                    startReveal()
+                } label: {
+                    Text("もう一回")
+                        .font(.headline)
+                        .foregroundColor(.brandTeal)
+                        .padding(.vertical, 16)
+                        .frame(maxWidth: .infinity)
+                        .background(Color.brandTeal.opacity(0.12))
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                }
+            }
+            .padding()
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "tray")
+                .font(.system(size: 48, weight: .light))
+                .foregroundColor(.secondary)
+            Text("候補が見つかりません")
+                .font(.headline)
+            Text("もっと候補を追加してください")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     private func mainCard(for item: Item) -> some View {
@@ -199,10 +253,80 @@ struct RecommendView: View {
         )
     }
 
-    private func recommend() {
+    private func startReveal() {
+        shuffleTask?.cancel()
+
+        let candidates: [Item]
+        if let mode = mode {
+            candidates = allItems.filter { $0.category == mode }
+        } else {
+            candidates = allItems
+        }
+
+        guard !candidates.isEmpty else {
+            mainItem = nil
+            subItems = []
+            shuffleItem = nil
+            isShuffling = false
+            return
+        }
+
         let result = RecommendLogic.recommend(from: allItems, mode: mode)
-        mainItem = result.main
-        subItems = result.sub
+
+        isShuffling = true
+        mainItem = nil
+        subItems = []
+        shuffleItem = candidates.randomElement()
+
+        let selectionHaptic = UISelectionFeedbackGenerator()
+        selectionHaptic.prepare()
+
+        shuffleTask = Task { @MainActor in
+            let totalDuration: Double = 1.3
+            let startInterval: Double = 0.06
+            let endInterval: Double = 0.22
+            var elapsed: Double = 0
+            var tickCounter = 0
+            var lastID: UUID? = shuffleItem?.id
+
+            while elapsed < totalDuration && !Task.isCancelled {
+                let progress = elapsed / totalDuration
+                let interval = startInterval + (endInterval - startInterval) * progress * progress
+
+                var next = candidates.randomElement()
+                if candidates.count > 1 {
+                    while next?.id == lastID {
+                        next = candidates.randomElement()
+                    }
+                }
+                lastID = next?.id
+                shuffleItem = next
+
+                tickCounter += 1
+                if tickCounter % 2 == 0 {
+                    selectionHaptic.selectionChanged()
+                    selectionHaptic.prepare()
+                }
+
+                try? await Task.sleep(for: .seconds(interval))
+                elapsed += interval
+            }
+
+            guard !Task.isCancelled else { return }
+
+            shuffleItem = result.main
+            try? await Task.sleep(for: .milliseconds(260))
+
+            guard !Task.isCancelled else { return }
+
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.65)) {
+                mainItem = result.main
+                subItems = result.sub
+                isShuffling = false
+            }
+        }
     }
 
     private func recommendationReason(for item: Item) -> String {
