@@ -88,24 +88,12 @@ struct RecommendView: View {
     }
 
     private func resultView(for item: Item) -> some View {
-        let categoryColor: Color = item.category == .food ? .brandOrange : .brandGreen
-
-        return VStack(spacing: 0) {
+        VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: 20) {
-                    Text("今日のおすすめ")
-                        .font(.subheadline.weight(.bold))
-                        .foregroundColor(categoryColor)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 6)
-                        .background(
-                            Capsule()
-                                .fill(categoryColor.opacity(0.15))
-                        )
-                        .padding(.top, 12)
-
                     mainCard(for: item)
                         .padding(.horizontal, 20)
+                        .padding(.top, 8)
 
                     if !subItems.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
