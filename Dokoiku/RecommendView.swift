@@ -135,68 +135,66 @@ struct RecommendView: View {
         .onAppear {
             recommend()
         }
-        .fullScreenCover(isPresented: $showingConfirmation) {
-            if let item = selectedItem {
-                ZStack {
-                    // 背景
-                    Color.white.ignoresSafeArea()
+        .fullScreenCover(item: $selectedItem) { item in
+            ZStack {
+                // 背景
+                Color.white.ignoresSafeArea()
+                
+                RadialGradient(gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.white]), center: .center, startRadius: 10, endRadius: 600)
+                    .ignoresSafeArea()
+                
+                // コンテンツ
+                VStack(spacing: 40) {
+                    Spacer()
                     
-                    RadialGradient(gradient: Gradient(colors: [Color.blue.opacity(0.2), Color.white]), center: .center, startRadius: 10, endRadius: 600)
-                        .ignoresSafeArea()
+                    Text("🎉")
+                        .font(.system(size: 100))
+                        .shadow(radius: 10)
                     
-                    // コンテンツ
-                    VStack(spacing: 40) {
-                        Spacer()
+                    VStack(spacing: 20) {
+                        Text("ここで決定したよ！")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.gray)
                         
-                        Text("🎉")
-                            .font(.system(size: 100))
-                            .shadow(radius: 10)
-                        
-                        VStack(spacing: 20) {
-                            Text("ここで決定したよ！")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .foregroundColor(.gray)
-                            
-                            Text(item.name)
-                                .font(.system(size: 54, weight: .black))
-                                .foregroundColor(.black)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal)
-                                .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 5)
-                        }
-                        
-                        Text("楽しんできてね！")
-                            .font(.title)
-                            .fontWeight(.black)
-                            .foregroundColor(.blue)
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            item.lastVisited = Date()
-                            item.visitCount += 1
-                            showingConfirmation = false
-                            dismiss()
-                        }) {
-                            Text("わかった！")
-                                .font(.title3)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
-                                .padding(.vertical, 20)
-                                .frame(maxWidth: .infinity)
-                                .background(
-                                    Capsule()
-                                        .fill(Color.blue)
-                                        .shadow(radius: 10)
-                                )
-                                .padding(.horizontal, 50)
-                        }
-                        .padding(.bottom, 50)
+                        Text(item.name)
+                            .font(.system(size: 54, weight: .black))
+                            .foregroundColor(.black)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal)
+                            .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 5)
                     }
+                    
+                    Text("楽しんできてね！")
+                        .font(.title)
+                        .fontWeight(.black)
+                        .foregroundColor(.blue)
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        item.lastVisited = Date()
+                        item.visitCount += 1
+                        selectedItem = nil
+                        dismiss()
+                    }) {
+                        Text("わかった！")
+                            .font(.title3)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .padding(.vertical, 20)
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                Capsule()
+                                    .fill(Color.blue)
+                                    .shadow(radius: 10)
+                            )
+                            .padding(.horizontal, 50)
+                    }
+                    .padding(.bottom, 50)
                 }
-                .preferredColorScheme(.light)
             }
+            .preferredColorScheme(.light)
         }
     }
     
@@ -220,6 +218,5 @@ struct RecommendView: View {
     
     private func selectItem(_ item: Item) {
         selectedItem = item
-        showingConfirmation = true
     }
 }
