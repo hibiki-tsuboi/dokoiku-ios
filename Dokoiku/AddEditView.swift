@@ -60,7 +60,7 @@ struct AddEditView: View {
                         Text(price.rawValue).tag(price)
                     }
                 }
-                TextField("メモ", text: $memo)
+                TextField("メモ", text: $memo, axis: .vertical)
             }
             
             Section(header: Text("履歴")) {
