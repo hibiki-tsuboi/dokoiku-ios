@@ -16,6 +16,7 @@ struct AddEditView: View {
     @State private var memo: String = ""
     @State private var desireLevel: Int = 3
     @State private var priceLevel: PriceLevel = .normal
+    @State private var showingDeleteConfirm = false
     
     let item: Item?
     
@@ -72,6 +73,18 @@ struct AddEditView: View {
                         }
                     }
                 }
+                
+                Section {
+                    Button(role: .destructive) {
+                        showingDeleteConfirm = true
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("この候補を削除")
+                            Spacer()
+                        }
+                    }
+                }
             }
         }
         .navigationTitle(item == nil ? "候補を追加" : "候補を編集")
@@ -83,6 +96,19 @@ struct AddEditView: View {
                 }
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
+        }
+        .confirmationDialog("本当に削除しますか？", isPresented: $showingDeleteConfirm, titleVisibility: .visible) {
+            Button("削除", role: .destructive) {
+                delete()
+            }
+            Button("キャンセル", role: .cancel) {}
+        }
+    }
+    
+    private func delete() {
+        if let item = item {
+            modelContext.delete(item)
+            dismiss()
         }
     }
     

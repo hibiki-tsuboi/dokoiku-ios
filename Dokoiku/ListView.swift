@@ -35,6 +35,9 @@ struct ListView: View {
         }
         .navigationTitle("候補一覧")
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                EditButton()
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 NavigationLink {
                     AddEditView(item: nil)
