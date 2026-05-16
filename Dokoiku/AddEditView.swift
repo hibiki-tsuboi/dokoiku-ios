@@ -16,6 +16,7 @@ struct AddEditView: View {
     @State private var memo: String = ""
     @State private var desireLevel: Int = 3
     @State private var priceLevel: PriceLevel = .normal
+    @State private var visitCount: Int = 0
     
     let item: Item?
     
@@ -28,6 +29,7 @@ struct AddEditView: View {
             _memo = State(initialValue: item.memo)
             _desireLevel = State(initialValue: item.desireLevel)
             _priceLevel = State(initialValue: item.priceLevel)
+            _visitCount = State(initialValue: item.visitCount)
         }
     }
     
@@ -56,6 +58,10 @@ struct AddEditView: View {
                 }
                 TextField("メモ", text: $memo)
             }
+            
+            Section(header: Text("履歴")) {
+                Stepper("行った回数: \(visitCount)回", value: $visitCount, in: 0...999)
+            }
         }
         .navigationTitle(item == nil ? "候補を追加" : "候補を編集")
         .navigationBarTitleDisplayMode(.inline)
@@ -82,8 +88,9 @@ struct AddEditView: View {
             item.memo = memo
             item.desireLevel = desireLevel
             item.priceLevel = priceLevel
+            item.visitCount = visitCount
         } else {
-            let newItem = Item(name: name, category: category, area: area, memo: memo, desireLevel: desireLevel, priceLevel: priceLevel)
+            let newItem = Item(name: name, category: category, area: area, memo: memo, desireLevel: desireLevel, priceLevel: priceLevel, visitCount: visitCount)
             modelContext.insert(newItem)
         }
         dismiss()
