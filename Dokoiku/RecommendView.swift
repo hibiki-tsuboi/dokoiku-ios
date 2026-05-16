@@ -88,62 +88,76 @@ struct RecommendView: View {
     }
 
     private func resultView(for item: Item) -> some View {
-        VStack(spacing: 0) {
+        let categoryColor: Color = item.category == .food ? .brandOrange : .brandGreen
+
+        return VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: 20) {
                     Text("今日のおすすめ")
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundColor(.secondary)
-                        .padding(.top, 8)
+                        .font(.subheadline.weight(.bold))
+                        .foregroundColor(categoryColor)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 6)
+                        .background(
+                            Capsule()
+                                .fill(categoryColor.opacity(0.15))
+                        )
+                        .padding(.top, 12)
 
                     mainCard(for: item)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 20)
 
                     if !subItems.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("その他の候補")
                                 .font(.headline)
-                                .padding(.horizontal)
+                                .padding(.horizontal, 24)
 
                             VStack(spacing: 10) {
                                 ForEach(subItems) { sub in
                                     subItemRow(for: sub)
                                 }
                             }
-                            .padding(.horizontal)
+                            .padding(.horizontal, 20)
                         }
                         .padding(.top, 8)
                     }
                 }
-                .padding(.bottom, 16)
+                .padding(.bottom, 24)
             }
 
-            VStack(spacing: 12) {
+            VStack(spacing: 6) {
                 Button {
                     selectItem(item)
                 } label: {
                     Text("ここにする")
                         .font(.headline)
                         .foregroundColor(.white)
-                        .padding(.vertical, 16)
+                        .padding(.vertical, 18)
                         .frame(maxWidth: .infinity)
-                        .background(Color.brandTeal)
-                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        .background(
+                            Capsule()
+                                .fill(Color.brandTeal)
+                        )
+                        .shadow(color: Color.brandTeal.opacity(0.3), radius: 14, x: 0, y: 6)
                 }
 
                 Button {
                     startReveal()
                 } label: {
-                    Text("もう一回")
-                        .font(.headline)
-                        .foregroundColor(.brandTeal)
-                        .padding(.vertical, 16)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.brandTeal.opacity(0.12))
-                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    HStack(spacing: 6) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.subheadline.weight(.semibold))
+                        Text("もう一回")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .foregroundColor(.brandTeal)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity)
                 }
             }
-            .padding()
+            .padding(.horizontal, 20)
+            .padding(.bottom, 12)
         }
     }
 
@@ -162,53 +176,69 @@ struct RecommendView: View {
     }
 
     private func mainCard(for item: Item) -> some View {
-        VStack(spacing: 12) {
-            categoryBadge(for: item.category)
-                .padding(.top, 4)
+        let categoryColor: Color = item.category == .food ? .brandOrange : .brandGreen
+        let categoryIcon = item.category == .food ? "fork.knife" : "figure.walk"
 
-            Text(item.name)
-                .font(.system(size: 32, weight: .bold))
-                .multilineTextAlignment(.center)
-
-            HStack(spacing: 8) {
-                Text(item.category.rawValue)
-                if !item.area.isEmpty {
-                    Text("·")
-                    Text(item.area)
-                }
-                Text("·")
-                Text(item.priceLevel.rawValue)
+        return VStack(spacing: 18) {
+            ZStack {
+                Circle()
+                    .fill(categoryColor)
+                    .frame(width: 96, height: 96)
+                    .shadow(color: categoryColor.opacity(0.35), radius: 18, x: 0, y: 8)
+                Image(systemName: categoryIcon)
+                    .font(.system(size: 40, weight: .semibold))
+                    .foregroundColor(.white)
             }
-            .font(.subheadline)
-            .foregroundColor(.secondary)
+            .padding(.top, 4)
+
+            VStack(spacing: 8) {
+                Text(item.name)
+                    .font(.system(size: 32, weight: .black, design: .rounded))
+                    .foregroundColor(.primary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 8)
+
+                HStack(spacing: 6) {
+                    Text(item.category.rawValue)
+                    if !item.area.isEmpty {
+                        Text("·")
+                        Text(item.area)
+                    }
+                    Text("·")
+                    Text(item.priceLevel.rawValue)
+                }
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            }
 
             if !item.memo.isEmpty {
                 Text(item.memo)
                     .font(.body)
-                    .padding()
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.brandBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                    .padding(.top, 4)
+                    .padding(16)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(Color.brandBackground.opacity(0.7))
+                    )
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("おすすめ理由")
-                    .font(.caption.weight(.semibold))
-                    .foregroundColor(.secondary)
+                    .font(.caption.weight(.bold))
+                    .foregroundColor(categoryColor)
                 Text(recommendationReason(for: item))
                     .font(.subheadline)
+                    .foregroundColor(.primary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 4)
         }
-        .padding(20)
+        .padding(28)
         .frame(maxWidth: .infinity)
         .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(Color.cardBackground)
         )
-        .shadow(color: Color.black.opacity(0.06), radius: 12, x: 0, y: 4)
+        .shadow(color: Color.black.opacity(0.07), radius: 18, x: 0, y: 6)
     }
 
     private func categoryBadge(for category: Category) -> some View {
@@ -225,28 +255,43 @@ struct RecommendView: View {
     }
 
     private func subItemRow(for item: Item) -> some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(item.name)
-                    .font(.subheadline.weight(.semibold))
-                if !item.area.isEmpty {
-                    Text(item.area)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+        let categoryColor: Color = item.category == .food ? .brandOrange : .brandGreen
+        let categoryIcon = item.category == .food ? "fork.knife" : "figure.walk"
+
+        return Button {
+            selectItem(item)
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(categoryColor)
+                        .frame(width: 40, height: 40)
+                    Image(systemName: categoryIcon)
+                        .font(.callout.weight(.semibold))
+                        .foregroundColor(.white)
                 }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.name)
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundColor(.primary)
+                    if !item.area.isEmpty {
+                        Text(item.area)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                Spacer()
+                Image(systemName: "arrow.right.circle.fill")
+                    .font(.title3)
+                    .foregroundColor(.brandTeal)
             }
-            Spacer()
-            Button("ここにする") {
-                selectItem(item)
-            }
-            .buttonStyle(.bordered)
-            .tint(.brandTeal)
+            .padding(14)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(Color.cardBackground)
+            )
         }
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(Color.cardBackground)
-        )
+        .buttonStyle(.plain)
     }
 
     private func startReveal() {
