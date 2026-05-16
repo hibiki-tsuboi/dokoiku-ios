@@ -181,7 +181,7 @@ struct RecommendView: View {
                 }
             }
             Spacer()
-            Button("これにする") {
+            Button("ここにする") {
                 selectItem(item)
             }
             .buttonStyle(.bordered)
