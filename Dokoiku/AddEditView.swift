@@ -48,7 +48,8 @@ struct AddEditView: View {
                 }
                 TextField("エリア", text: $area)
             }
-            
+            .listRowBackground(Color.cardBackground)
+
             Section(header: Text("詳細")) {
                 Picker("行きたい度", selection: $desireLevel) {
                     ForEach(1...5, id: \.self) { level in
@@ -63,16 +64,22 @@ struct AddEditView: View {
                 TextField("メモ", text: $memo, axis: .vertical)
                     .lineLimit(5)
             }
-            
+            .listRowBackground(Color.cardBackground)
+
             Section(header: Text("履歴")) {
                 Stepper("行った回数: \(visitCount)回", value: $visitCount, in: 0...999)
                 if visitCount > 0 {
                     DatePicker("最後に訪れた日", selection: $lastVisitedDate, displayedComponents: .date)
                 }
             }
+            .listRowBackground(Color.cardBackground)
         }
+        .scrollContentBackground(.hidden)
+        .background(Color.brandBackground)
         .navigationTitle(item == nil ? "候補を追加" : "候補を編集")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.brandBackground, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
                 Button("キャンセル") {

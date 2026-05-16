@@ -25,14 +25,14 @@ struct DetailView: View {
                     Text(item.name)
                         .bold()
                 }
-                
+
                 HStack {
                     Text("カテゴリ")
                         .foregroundColor(.secondary)
                     Spacer()
                     Text(item.category.rawValue)
                 }
-                
+
                 HStack {
                     Text("エリア")
                         .foregroundColor(.secondary)
@@ -40,7 +40,8 @@ struct DetailView: View {
                     Text(item.area)
                 }
             }
-            
+            .listRowBackground(Color.cardBackground)
+
             Section(header: Text("詳細")) {
                 HStack {
                     Text("行きたい度")
@@ -48,14 +49,14 @@ struct DetailView: View {
                     Spacer()
                     Text("\(item.desireLevel) / 5")
                 }
-                
+
                 HStack {
                     Text("価格帯")
                         .foregroundColor(.secondary)
                     Spacer()
                     Text(item.priceLevel.rawValue)
                 }
-                
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text("メモ")
                         .foregroundColor(.secondary)
@@ -63,7 +64,8 @@ struct DetailView: View {
                 }
                 .padding(.vertical, 4)
             }
-            
+            .listRowBackground(Color.cardBackground)
+
             Section(header: Text("履歴")) {
                 HStack {
                     Text("行った回数")
@@ -71,7 +73,7 @@ struct DetailView: View {
                     Spacer()
                     Text("\(item.visitCount)回")
                 }
-                
+
                 HStack {
                     Text("最後に訪れた日")
                         .foregroundColor(.secondary)
@@ -83,7 +85,8 @@ struct DetailView: View {
                     }
                 }
             }
-            
+            .listRowBackground(Color.cardBackground)
+
             Section {
                 Button(role: .destructive) {
                     showingDeleteConfirm = true
@@ -95,9 +98,14 @@ struct DetailView: View {
                     }
                 }
             }
+            .listRowBackground(Color.cardBackground)
         }
+        .scrollContentBackground(.hidden)
+        .background(Color.brandBackground)
         .navigationTitle("候補の詳細")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.brandBackground, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("編集") {
