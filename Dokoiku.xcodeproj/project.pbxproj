@@ -31,8 +31,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B64854A12FB0C0F5004E5F01 /* Dokoiku */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = Dokoiku;
 			sourceTree = "<group>";
 		};
@@ -70,7 +68,6 @@
 			children = (
 				A8C00D0E780F5ABCA46FF716 /* RecommendLogicTests.swift */,
 			);
-			name = DokoikuTests;
 			path = DokoikuTests;
 			sourceTree = "<group>";
 		};

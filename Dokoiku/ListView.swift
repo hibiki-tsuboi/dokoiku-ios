@@ -14,7 +14,7 @@ struct ListView: View {
         List {
             ForEach(items) { item in
                 NavigationLink {
-                    AddEditView(item: item)
+                    DetailView(item: item)
                 } label: {
                     VStack(alignment: .leading) {
                         Text(item.name)

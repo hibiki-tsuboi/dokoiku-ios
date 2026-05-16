@@ -16,7 +16,6 @@ struct AddEditView: View {
     @State private var memo: String = ""
     @State private var desireLevel: Int = 3
     @State private var priceLevel: PriceLevel = .normal
-    @State private var showingDeleteConfirm = false
     
     let item: Item?
     
@@ -57,60 +56,21 @@ struct AddEditView: View {
                 }
                 TextField("メモ", text: $memo)
             }
-            
-            if let item = item {
-                Section(header: Text("履歴")) {
-                    HStack {
-                        Text("行った回数")
-                        Spacer()
-                        Text("\(item.visitCount)回")
-                    }
-                    if let lastVisited = item.lastVisited {
-                        HStack {
-                            Text("最後に訪れた日")
-                            Spacer()
-                            Text(lastVisited, format: .dateTime.year().month().day())
-                        }
-                    }
-                }
-                
-                Section {
-                    Button(role: .destructive) {
-                        showingDeleteConfirm = true
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Text("この候補を削除")
-                            Spacer()
-                        }
-                    }
-                }
-            }
         }
         .navigationTitle(item == nil ? "候補を追加" : "候補を編集")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("キャンセル") {
+                    dismiss()
+                }
+            }
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button("保存") {
                     save()
                 }
                 .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
-        }
-        .alert("本当に削除しますか？", isPresented: $showingDeleteConfirm) {
-            Button("キャンセル", role: .cancel) {}
-            Button("削除", role: .destructive) {
-                delete()
-            }
-        } message: {
-            Text("この操作は取り消せません。")
-        }
-    }
-    
-    private func delete() {
-        if let item = item {
-            modelContext.delete(item)
-            dismiss()
         }
     }
     
