@@ -27,14 +27,12 @@ struct HomeView: View {
             .toolbarBackground(Color.brandBackground, for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
                     NavigationLink {
                         HistoryView()
                     } label: {
                         Image(systemName: "clock.arrow.circlepath")
                     }
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
                     NavigationLink {
                         ListView()
                     } label: {
