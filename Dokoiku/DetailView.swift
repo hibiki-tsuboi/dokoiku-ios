@@ -37,7 +37,7 @@ struct DetailView: View {
                     Text("エリア")
                         .foregroundColor(.secondary)
                     Spacer()
-                    Text(item.area.isEmpty ? "未設定" : item.area)
+                    Text(item.area)
                 }
             }
             
@@ -59,7 +59,7 @@ struct DetailView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("メモ")
                         .foregroundColor(.secondary)
-                    Text(item.memo.isEmpty ? "なし" : item.memo)
+                    Text(item.memo)
                 }
                 .padding(.vertical, 4)
             }
@@ -79,7 +79,7 @@ struct DetailView: View {
                     if let lastVisited = item.lastVisited {
                         Text(lastVisited, format: .dateTime.year().month().day())
                     } else {
-                        Text("なし")
+                        Text("")
                     }
                 }
             }
