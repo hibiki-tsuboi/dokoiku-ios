@@ -95,7 +95,7 @@ struct HomeView: View {
                 Text("今日は")
                     .font(.title3.weight(.semibold))
                     .foregroundColor(.secondary)
-                Text("どこいく？")
+                Text("どこ行く？")
                     .font(.system(size: 56, weight: .black, design: .rounded))
                     .foregroundColor(.primary)
             }
