@@ -13,20 +13,23 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color.brandBackground
-                    .ignoresSafeArea()
-
+            Group {
                 if items.isEmpty {
                     emptyState
                 } else {
                     modeSelection
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background {
+                Image("AppBackground")
+                    .resizable()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .ignoresSafeArea()
+            }
             .navigationTitle("")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Color.brandBackground, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .task {
                 seedVisitsIfNeeded()
             }
@@ -98,6 +101,8 @@ struct HomeView: View {
                 Text("どこ行く？")
                     .font(.system(size: 56, weight: .black, design: .rounded))
                     .foregroundColor(.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 24)
