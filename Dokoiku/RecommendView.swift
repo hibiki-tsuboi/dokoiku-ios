@@ -160,13 +160,21 @@ struct RecommendView: View {
                 } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "arrow.clockwise")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.headline)
                         Text("もう一回")
-                            .font(.subheadline.weight(.semibold))
+                            .font(.headline)
                     }
                     .foregroundColor(.brandTeal)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, 18)
                     .frame(maxWidth: .infinity)
+                    .background(
+                        Capsule()
+                            .fill(Color.white)
+                    )
+                    .overlay(
+                        Capsule()
+                            .stroke(Color.brandTeal, lineWidth: 1.5)
+                    )
                 }
             }
             .padding(.horizontal, 20)
