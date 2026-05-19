@@ -27,9 +27,7 @@ struct RecommendView: View {
     @State private var contentVisible = false
 
     var body: some View {
-        ZStack {
-            Color.brandBackground.ignoresSafeArea()
-
+        Group {
             if isShuffling, let shuffleItem {
                 shufflingView(for: shuffleItem)
             } else if let mainItem {
@@ -38,10 +36,16 @@ struct RecommendView: View {
                 emptyState
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background {
+            Image("RecommendBackground")
+                .resizable()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
+        }
         .navigationTitle("おすすめ")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Color.brandBackground, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .onAppear {
             startReveal()
         }
