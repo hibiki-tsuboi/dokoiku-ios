@@ -13,6 +13,7 @@ struct RecommendView: View {
     @Query private var allItems: [Item]
 
     let mode: Category?
+    var area: String? = nil
 
     @State private var mainItem: Item?
     @State private var subItems: [Item] = []
@@ -210,11 +211,20 @@ struct RecommendView: View {
                 .foregroundColor(.secondary)
             Text("候補が見つかりません")
                 .font(.headline)
-            Text("もっと候補を追加してください")
+            Text(emptyStateMessage)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    private var emptyStateMessage: String {
+        if let area = area {
+            return "「\(area)」付近に候補がありません。\nエリアを変えるか、候補を追加してください。"
+        }
+        return "もっと候補を追加してください"
     }
 
     private func mainCard(for item: Item, showBurst: Bool = false) -> some View {
@@ -337,11 +347,9 @@ struct RecommendView: View {
     private func startReveal() {
         shuffleTask?.cancel()
 
-        let candidates: [Item]
-        if let mode = mode {
-            candidates = allItems.filter { $0.category == mode }
-        } else {
-            candidates = allItems
+        let candidates = allItems.filter { item in
+            (mode == nil || item.category == mode) &&
+            (area == nil || item.area == area)
         }
 
         guard !candidates.isEmpty else {
@@ -352,7 +360,7 @@ struct RecommendView: View {
             return
         }
 
-        let result = RecommendLogic.recommend(from: allItems, mode: mode)
+        let result = RecommendLogic.recommend(from: allItems, mode: mode, area: area)
 
         isShuffling = true
         mainItem = nil

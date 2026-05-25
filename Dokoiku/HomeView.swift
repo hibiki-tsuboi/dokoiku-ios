@@ -10,6 +10,16 @@ struct HomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
     @State private var showingAddSheet = false
+    @State private var selectedArea: String? = nil
+
+    private var availableAreas: [String] {
+        let set = Set(
+            items
+                .filter { !$0.area.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+                .map { $0.area }
+        )
+        return set.sorted()
+    }
 
     var body: some View {
         NavigationStack {
@@ -108,16 +118,52 @@ struct HomeView: View {
             .padding(.horizontal, 24)
             .padding(.top, 8)
 
+            if !availableAreas.isEmpty {
+                areaSelector
+                    .padding(.horizontal, 20)
+            }
+
             VStack(spacing: 14) {
-                ModeButton(title: "ごはん", icon: "fork.knife", color: .brandOrange)
-                ModeButton(title: "おでかけ", icon: "figure.walk", color: .brandGreen)
-                ModeButton(title: "おまかせ", icon: "sparkles", color: .brandTeal)
+                ModeButton(title: "ごはん", icon: "fork.knife", color: .brandOrange, area: selectedArea)
+                ModeButton(title: "おでかけ", icon: "figure.walk", color: .brandGreen, area: selectedArea)
+                ModeButton(title: "おまかせ", icon: "sparkles", color: .brandTeal, area: selectedArea)
             }
             .padding(.horizontal, 20)
 
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+
+    private var areaSelector: some View {
+        Menu {
+            Picker("エリア", selection: $selectedArea) {
+                Text("すべてのエリア").tag(String?.none)
+                ForEach(availableAreas, id: \.self) { area in
+                    Text(area).tag(String?.some(area))
+                }
+            }
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "mappin.and.ellipse")
+                    .font(.headline)
+                    .foregroundColor(.brandTeal)
+                Text(selectedArea ?? "すべてのエリア")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundColor(.primary)
+                Spacer()
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption.weight(.semibold))
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal, 18)
+            .padding(.vertical, 14)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color.cardBackground)
+            )
+            .shadow(color: Color.black.opacity(0.06), radius: 10, x: 0, y: 4)
+        }
     }
 
     private func seedVisitsIfNeeded() {
@@ -138,10 +184,11 @@ struct ModeButton: View {
     let title: String
     let icon: String
     let color: Color
+    var area: String? = nil
 
     var body: some View {
         NavigationLink {
-            RecommendView(mode: title == "ごはん" ? .food : (title == "おでかけ" ? .outing : nil))
+            RecommendView(mode: title == "ごはん" ? .food : (title == "おでかけ" ? .outing : nil), area: area)
         } label: {
             HStack(spacing: 16) {
                 ZStack {

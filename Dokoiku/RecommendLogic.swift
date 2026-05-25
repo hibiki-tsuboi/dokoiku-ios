@@ -5,13 +5,17 @@
 
 import Foundation
 class RecommendLogic {
-    static func recommend(from candidates: [Item], mode: Category?) -> (main: Item?, sub: [Item]) {
+    static func recommend(from candidates: [Item], mode: Category?, area: String? = nil) -> (main: Item?, sub: [Item]) {
         var filtered = candidates
 
         if let mode = mode {
             filtered = filtered.filter { $0.category == mode }
         }
-        
+
+        if let area = area {
+            filtered = filtered.filter { $0.area == area }
+        }
+
         guard !filtered.isEmpty else {
             return (nil, [])
         }

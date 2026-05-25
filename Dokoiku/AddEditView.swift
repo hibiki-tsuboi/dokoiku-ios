@@ -131,17 +131,18 @@ struct AddEditView: View {
     
     private func save() {
         let finalLastVisited = visitCount > 0 ? lastVisitedDate : nil
+        let trimmedArea = area.trimmingCharacters(in: .whitespacesAndNewlines)
         if let item = item {
             item.name = name
             item.category = category
-            item.area = area
+            item.area = trimmedArea
             item.memo = memo
             item.desireLevel = desireLevel
             item.priceLevel = priceLevel
             item.visitCount = visitCount
             item.lastVisited = finalLastVisited
         } else {
-            let newItem = Item(name: name, category: category, area: area, memo: memo, desireLevel: desireLevel, lastVisited: finalLastVisited, priceLevel: priceLevel, visitCount: visitCount)
+            let newItem = Item(name: name, category: category, area: trimmedArea, memo: memo, desireLevel: desireLevel, lastVisited: finalLastVisited, priceLevel: priceLevel, visitCount: visitCount)
             modelContext.insert(newItem)
         }
         dismiss()
