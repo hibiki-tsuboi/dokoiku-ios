@@ -9,7 +9,8 @@ import SwiftData
 struct AddEditView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    
+    @Query private var allItems: [Item]
+
     @State private var name: String = ""
     @State private var category: Category = .food
     @State private var area: String = ""
@@ -21,7 +22,16 @@ struct AddEditView: View {
     @State private var showingDatePicker = false
 
     let item: Item?
-    
+
+    private var areaSuggestions: [String] {
+        let set = Set(
+            allItems
+                .map { $0.area.trimmingCharacters(in: .whitespacesAndNewlines) }
+                .filter { !$0.isEmpty }
+        )
+        return set.sorted()
+    }
+
     init(item: Item?) {
         self.item = item
         if let item = item {
@@ -48,6 +58,36 @@ struct AddEditView: View {
                     }
                 }
                 TextField("エリア", text: $area)
+
+                if !areaSuggestions.isEmpty {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("登録済みのエリア")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(areaSuggestions, id: \.self) { suggestion in
+                                    let isSelected = area.trimmingCharacters(in: .whitespacesAndNewlines) == suggestion
+                                    Button {
+                                        area = suggestion
+                                    } label: {
+                                        Text(suggestion)
+                                            .font(.caption.weight(.semibold))
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 6)
+                                            .background(
+                                                Capsule()
+                                                    .fill(isSelected ? Color.brandTeal : Color.brandTeal.opacity(0.12))
+                                            )
+                                            .foregroundColor(isSelected ? .white : .brandTeal)
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                }
             }
             .listRowBackground(Color.cardBackground)
 
