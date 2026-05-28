@@ -12,6 +12,11 @@ struct HomeView: View {
     @State private var showingAddSheet = false
     @State private var selectedArea: String? = nil
 
+    private var appVersionLabel: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "-"
+        return "バージョン \(version)"
+    }
+
     private var availableAreas: [String] {
         let set = Set(
             items
@@ -44,16 +49,22 @@ struct HomeView: View {
                 seedVisitsIfNeeded()
             }
             .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    NavigationLink {
-                        HistoryView()
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        NavigationLink {
+                            HistoryView()
+                        } label: {
+                            Label("履歴", systemImage: "clock.arrow.circlepath")
+                        }
+                        NavigationLink {
+                            ListView()
+                        } label: {
+                            Label("候補一覧", systemImage: "list.bullet")
+                        }
+                        Divider()
+                        Text(appVersionLabel)
                     } label: {
-                        Image(systemName: "clock.arrow.circlepath")
-                    }
-                    NavigationLink {
-                        ListView()
-                    } label: {
-                        Image(systemName: "list.bullet")
+                        Image(systemName: "gearshape")
                     }
                 }
             }
